@@ -53,7 +53,7 @@ export function useRandomizer() {
     return CHALLENGES.find(c => c.id === id)
   }
 
-  function randomize() {
+  function randomize(skipSet = false) {
     const numPlayers = store.numberPlayers
     const noDuplicates = store.duplicateCheck
     const checkCompletion = store.completionCheck && numPlayers === 1
@@ -191,7 +191,9 @@ export function useRandomizer() {
       results.objectives.push(selectedTimedObjective)
     }
 
-    store.setResults(results)
+    if (!skipSet) {
+      store.setResults(results)
+    }
 
     return results
   }
