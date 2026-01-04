@@ -5,9 +5,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-pnpm dev      # Start development server (Vite)
-pnpm build    # Build for production
-pnpm preview  # Preview production build
+pnpm dev       # Start development server (Vite)
+pnpm build     # Build for production
+pnpm preview   # Preview production build
+pnpm test      # Run tests in watch mode
+pnpm test:run  # Run tests once
 ```
 
 ## Architecture
@@ -39,3 +41,9 @@ The app has a three-panel layout:
 ### Path Alias
 
 `@` is aliased to `src/` in vite.config.js.
+
+### Testing
+
+Uses Vitest + Vue Test Utils. Tests are in `src/__tests__/`. Key test files:
+- `gameStore.test.js` - Store state and actions
+- `useRandomizer.test.js` - Randomization logic, targeting, challenge incompatibilities
