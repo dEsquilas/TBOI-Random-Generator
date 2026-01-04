@@ -5,11 +5,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-pnpm dev       # Start development server (Vite)
-pnpm build     # Build for production
-pnpm preview   # Preview production build
-pnpm test      # Run tests in watch mode
-pnpm test:run  # Run tests once
+pnpm dev        # Start development server (Vite)
+pnpm build      # Build for production
+pnpm preview    # Preview production build
+pnpm test       # Run unit tests in watch mode
+pnpm test:run   # Run unit tests once
+pnpm test:e2e   # Run E2E tests (requires build first)
 ```
 
 ## Architecture
@@ -44,6 +45,10 @@ The app has a three-panel layout:
 
 ### Testing
 
-Uses Vitest + Vue Test Utils. Tests are in `src/__tests__/`. Key test files:
+**Unit tests** (Vitest + Vue Test Utils) in `src/__tests__/`:
 - `gameStore.test.js` - Store state and actions
 - `useRandomizer.test.js` - Randomization logic, targeting, challenge incompatibilities
+
+**E2E tests** (Playwright) in `e2e/`:
+- Tests user flows: randomization, presets, completion, display modes, persistence
+- Some tests are probabilistic due to randomness - may occasionally fail
