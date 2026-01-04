@@ -4,6 +4,7 @@ import { useGameStore } from '@/stores/gameStore'
 import { useLocalStorage } from '@/composables/useLocalStorage'
 import { useRandomizer } from '@/composables/useRandomizer'
 import OptionsPanel from '@/components/options/OptionsPanel.vue'
+import CompletionPanel from '@/components/completion/CompletionPanel.vue'
 import RandomizeButton from '@/components/ui/RandomizeButton.vue'
 import FullDisplay from '@/components/display/FullDisplay.vue'
 import SimpleDisplayA from '@/components/display/SimpleDisplayA.vue'
@@ -68,5 +69,10 @@ function handleError(message) {
         </button>
       </div>
     </main>
+
+    <!-- Completion Panel (right side) -->
+    <aside class="w-[400px] shrink-0 overflow-y-auto max-h-screen">
+      <CompletionPanel />
+    </aside>
   </div>
 </template>
