@@ -43,6 +43,7 @@ export const useGameStore = defineStore('game', () => {
   // Timed objectives
   const timedEnabled = ref(true)
   const timedChance = ref(50)
+  const timedAsExtra = ref(false) // false = independent objectives, true = rolled as extras alongside main objective
   const selectedTimedObjectives = ref(new Set(TIMED_OBJECTIVES.map(t => t.id)))
 
   // Challenges
@@ -73,6 +74,7 @@ export const useGameStore = defineStore('game', () => {
   const results = ref({
     players: [],
     objectives: [],
+    timedObjectives: [],
     challenges: [],
     gameChallenge: null
   })
@@ -274,7 +276,7 @@ export const useGameStore = defineStore('game', () => {
   }
 
   function clearResults() {
-    results.value = { players: [], objectives: [], challenges: [], gameChallenge: null }
+    results.value = { players: [], objectives: [], timedObjectives: [], challenges: [], gameChallenge: null }
   }
 
   // Export state for localStorage
@@ -298,6 +300,7 @@ export const useGameStore = defineStore('game', () => {
       objectiveWeightsVisible: objectiveWeightsVisible.value,
       timedEnabled: timedEnabled.value,
       timedChance: timedChance.value,
+      timedAsExtra: timedAsExtra.value,
       selectedTimedObjectives: [...selectedTimedObjectives.value],
       challengeEnabled: challengeEnabled.value,
       challengeChance: challengeChance.value,
@@ -330,6 +333,7 @@ export const useGameStore = defineStore('game', () => {
     if (state.objectiveWeightsVisible !== undefined) objectiveWeightsVisible.value = state.objectiveWeightsVisible
     if (state.timedEnabled !== undefined) timedEnabled.value = state.timedEnabled
     if (state.timedChance) timedChance.value = state.timedChance
+    if (state.timedAsExtra !== undefined) timedAsExtra.value = state.timedAsExtra
     if (state.selectedTimedObjectives) selectedTimedObjectives.value = new Set(state.selectedTimedObjectives)
     if (state.challengeEnabled !== undefined) challengeEnabled.value = state.challengeEnabled
     if (state.challengeChance) challengeChance.value = state.challengeChance
@@ -366,6 +370,7 @@ export const useGameStore = defineStore('game', () => {
     // Timed
     timedEnabled,
     timedChance,
+    timedAsExtra,
     selectedTimedObjectives,
     // Challenges
     challengeEnabled,
