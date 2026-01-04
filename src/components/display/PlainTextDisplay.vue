@@ -4,10 +4,11 @@ import { useGameStore } from '@/stores/gameStore'
 
 const store = useGameStore()
 
-const hasResults = computed(() => store.results.players.length > 0)
+const hasResults = computed(() => store.results.players.length > 0 || store.results.gameChallenge)
 const players = computed(() => store.results.players)
 const objectives = computed(() => store.results.objectives)
 const challenges = computed(() => store.results.challenges)
+const gameChallenge = computed(() => store.results.gameChallenge)
 const alignment = computed(() => store.chromaAlignment)
 const textColor = computed(() => `#${store.chromaTextColor}`)
 
@@ -24,17 +25,28 @@ const challengeNames = computed(() => challenges.value.map(c => c.name).join(', 
 
 <template>
   <div class="p-4 text-lg" :class="textAlignClass" :style="{ color: textColor }">
-    <p class="my-2">
-      <span class="font-bold mr-2">Play as:</span>
-      <span>{{ hasResults ? playerNames : '?' }}</span>
-    </p>
-    <p v-if="hasResults" class="my-2">
-      <span class="font-bold mr-2">Defeat:</span>
-      <span>{{ objectiveNames }}</span>
-    </p>
-    <p v-if="challenges.length > 0" class="my-2">
-      <span class="font-bold mr-2">Challenges:</span>
-      <span>{{ challengeNames }}</span>
-    </p>
+    <!-- Game Challenge Display -->
+    <template v-if="gameChallenge">
+      <p class="my-2">
+        <span class="font-bold mr-2">Challenge #{{ gameChallenge.num }}:</span>
+        <span>{{ gameChallenge.name }}</span>
+      </p>
+    </template>
+
+    <!-- Normal Display -->
+    <template v-else>
+      <p class="my-2">
+        <span class="font-bold mr-2">Play as:</span>
+        <span>{{ hasResults ? playerNames : '?' }}</span>
+      </p>
+      <p v-if="hasResults" class="my-2">
+        <span class="font-bold mr-2">Defeat:</span>
+        <span>{{ objectiveNames }}</span>
+      </p>
+      <p v-if="challenges.length > 0" class="my-2">
+        <span class="font-bold mr-2">Challenges:</span>
+        <span>{{ challengeNames }}</span>
+      </p>
+    </template>
   </div>
 </template>
