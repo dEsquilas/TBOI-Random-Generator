@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
-import { CHARACTERS, OBJECTIVES, TIMED_OBJECTIVES } from '@/constants/gameData'
+import { CHARACTERS, OBJECTIVES, TIMED_OBJECTIVES, GAME_CHALLENGES, ALL_GAME_CHALLENGES } from '@/constants/gameData'
 
 const store = useGameStore()
 
@@ -87,10 +87,48 @@ function getTotalCompleted() {
   })
   return count
 }
+
+// Game challenge functions
+function isChallengeCompleted(challengeId) {
+  return store.getGameChallengeCompletion(challengeId)
+}
+
+function toggleChallengeCompletion(challengeId) {
+  const current = store.getGameChallengeCompletion(challengeId)
+  store.setGameChallengeCompletion(challengeId, !current)
+}
+
+function isChallengeTargeting(challengeId) {
+  return store.isGameChallengeTargeting(challengeId)
+}
+
+function toggleChallengeTargeting(challengeId) {
+  store.setGameChallengeTargeting(challengeId, !store.isGameChallengeTargeting(challengeId))
+}
+
+function getChallengeStats() {
+  const targeted = ALL_GAME_CHALLENGES.filter(ch => store.isGameChallengeTargeting(ch.id)).length
+  const completed = ALL_GAME_CHALLENGES.filter(ch =>
+    store.isGameChallengeTargeting(ch.id) && store.getGameChallengeCompletion(ch.id)
+  ).length
+  return { targeted, completed }
+}
+
+function hasAllChallengeTargets() {
+  return ALL_GAME_CHALLENGES.every(ch => store.isGameChallengeTargeting(ch.id))
+}
+
+function toggleAllChallengeTargets() {
+  if (hasAllChallengeTargets()) {
+    store.setAllGameChallengeTargets(false)
+  } else {
+    store.setAllGameChallengeTargets(true)
+  }
+}
 </script>
 
 <template>
-  <div class="bg-black/90 text-white p-4 max-h-screen overflow-y-auto">
+  <div class="bg-black/90 text-white p-4 min-h-screen max-h-screen overflow-y-auto">
     <div class="max-w-md">
       <!-- Tabs -->
       <div class="flex gap-2 mb-4">
@@ -203,6 +241,105 @@ function getTotalCompleted() {
             </div>
           </div>
         </div>
+
+        <!-- Game Challenges Section -->
+        <template v-if="store.gameChallengesEnabled">
+          <hr class="border-gray-600 my-4" />
+          <div>
+            <h3 class="text-sm font-semibold text-gray-400 mb-2">
+              Challenges
+              <span class="text-xs font-normal">({{ getChallengeStats().completed }}/{{ getChallengeStats().targeted }})</span>
+            </h3>
+
+            <!-- Rebirth Challenges -->
+            <div class="mb-4">
+              <h4 class="text-sm text-gray-500 mb-2">Rebirth</h4>
+              <div class="space-y-2">
+                <label
+                  v-for="ch in GAME_CHALLENGES.rebirth"
+                  :key="ch.id"
+                  class="flex items-center gap-3 cursor-pointer"
+                  :class="{ 'opacity-30': !isChallengeTargeting(ch.id) }"
+                >
+                  <input
+                    type="checkbox"
+                    :checked="isChallengeCompleted(ch.id)"
+                    :disabled="!isChallengeTargeting(ch.id)"
+                    @change="toggleChallengeCompletion(ch.id)"
+                    class="cursor-pointer accent-green-600 w-4 h-4"
+                  />
+                  <span class="text-sm">{{ ch.num }}. {{ ch.name }}</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Afterbirth Challenges -->
+            <div class="mb-4">
+              <h4 class="text-sm text-gray-500 mb-2">Afterbirth</h4>
+              <div class="space-y-2">
+                <label
+                  v-for="ch in GAME_CHALLENGES.afterbirth"
+                  :key="ch.id"
+                  class="flex items-center gap-3 cursor-pointer"
+                  :class="{ 'opacity-30': !isChallengeTargeting(ch.id) }"
+                >
+                  <input
+                    type="checkbox"
+                    :checked="isChallengeCompleted(ch.id)"
+                    :disabled="!isChallengeTargeting(ch.id)"
+                    @change="toggleChallengeCompletion(ch.id)"
+                    class="cursor-pointer accent-green-600 w-4 h-4"
+                  />
+                  <span class="text-sm">{{ ch.num }}. {{ ch.name }}</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Afterbirth+ Challenges -->
+            <div class="mb-4">
+              <h4 class="text-sm text-gray-500 mb-2">Afterbirth+</h4>
+              <div class="space-y-2">
+                <label
+                  v-for="ch in GAME_CHALLENGES.afterbirthPlus"
+                  :key="ch.id"
+                  class="flex items-center gap-3 cursor-pointer"
+                  :class="{ 'opacity-30': !isChallengeTargeting(ch.id) }"
+                >
+                  <input
+                    type="checkbox"
+                    :checked="isChallengeCompleted(ch.id)"
+                    :disabled="!isChallengeTargeting(ch.id)"
+                    @change="toggleChallengeCompletion(ch.id)"
+                    class="cursor-pointer accent-green-600 w-4 h-4"
+                  />
+                  <span class="text-sm">{{ ch.num }}. {{ ch.name }}</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Repentance Challenges -->
+            <div>
+              <h4 class="text-sm text-gray-500 mb-2">Repentance</h4>
+              <div class="space-y-2">
+                <label
+                  v-for="ch in GAME_CHALLENGES.repentance"
+                  :key="ch.id"
+                  class="flex items-center gap-3 cursor-pointer"
+                  :class="{ 'opacity-30': !isChallengeTargeting(ch.id) }"
+                >
+                  <input
+                    type="checkbox"
+                    :checked="isChallengeCompleted(ch.id)"
+                    :disabled="!isChallengeTargeting(ch.id)"
+                    @change="toggleChallengeCompletion(ch.id)"
+                    class="cursor-pointer accent-green-600 w-4 h-4"
+                  />
+                  <span class="text-sm">{{ ch.num }}. {{ ch.name }}</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </template>
       </div>
 
       <!-- Config Tab -->
@@ -254,7 +391,7 @@ function getTotalCompleted() {
               </button>
               <button
                 @click="toggleAllForCharacter(char.id)"
-                class="ml-1 px-2 py-0.5 text-xs rounded transition-colors"
+                class="ml-1 w-10 py-0.5 text-xs rounded transition-colors text-center"
                 :class="hasAllTargets(char.id) ? 'bg-red-700 hover:bg-red-600' : 'bg-green-700 hover:bg-green-600'"
               >
                 {{ hasAllTargets(char.id) ? 'Clear' : 'All' }}
@@ -289,7 +426,7 @@ function getTotalCompleted() {
               </button>
               <button
                 @click="toggleAllForCharacter(char.id)"
-                class="ml-1 px-2 py-0.5 text-xs rounded transition-colors"
+                class="ml-1 w-10 py-0.5 text-xs rounded transition-colors text-center"
                 :class="hasAllTargets(char.id) ? 'bg-red-700 hover:bg-red-600' : 'bg-green-700 hover:bg-green-600'"
               >
                 {{ hasAllTargets(char.id) ? 'Clear' : 'All' }}
@@ -297,6 +434,107 @@ function getTotalCompleted() {
             </div>
           </div>
         </div>
+
+        <!-- Game Challenges Config Section -->
+        <template v-if="store.gameChallengesEnabled">
+          <hr class="border-gray-600 my-4" />
+          <div>
+            <h3 class="text-sm font-semibold text-gray-400 mb-2">
+              Challenges Config
+              <span class="text-xs font-normal">({{ getChallengeStats().targeted }}/45)</span>
+            </h3>
+
+            <div class="flex gap-2 mb-3">
+              <button
+                @click="toggleAllChallengeTargets()"
+                class="w-20 py-0.5 text-xs rounded transition-colors text-center"
+                :class="hasAllChallengeTargets() ? 'bg-red-700 hover:bg-red-600' : 'bg-green-700 hover:bg-green-600'"
+              >
+                {{ hasAllChallengeTargets() ? 'Clear All' : 'Select All' }}
+              </button>
+            </div>
+
+            <!-- Rebirth Challenges -->
+            <div class="mb-4">
+              <h4 class="text-sm text-gray-500 mb-2">Rebirth</h4>
+              <div class="space-y-2">
+                <label
+                  v-for="ch in GAME_CHALLENGES.rebirth"
+                  :key="ch.id"
+                  class="flex items-center gap-3 cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    :checked="isChallengeTargeting(ch.id)"
+                    @change="toggleChallengeTargeting(ch.id)"
+                    class="cursor-pointer accent-blue-600 w-4 h-4"
+                  />
+                  <span class="text-sm">{{ ch.num }}. {{ ch.name }}</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Afterbirth Challenges -->
+            <div class="mb-4">
+              <h4 class="text-sm text-gray-500 mb-2">Afterbirth</h4>
+              <div class="space-y-2">
+                <label
+                  v-for="ch in GAME_CHALLENGES.afterbirth"
+                  :key="ch.id"
+                  class="flex items-center gap-3 cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    :checked="isChallengeTargeting(ch.id)"
+                    @change="toggleChallengeTargeting(ch.id)"
+                    class="cursor-pointer accent-blue-600 w-4 h-4"
+                  />
+                  <span class="text-sm">{{ ch.num }}. {{ ch.name }}</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Afterbirth+ Challenges -->
+            <div class="mb-4">
+              <h4 class="text-sm text-gray-500 mb-2">Afterbirth+</h4>
+              <div class="space-y-2">
+                <label
+                  v-for="ch in GAME_CHALLENGES.afterbirthPlus"
+                  :key="ch.id"
+                  class="flex items-center gap-3 cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    :checked="isChallengeTargeting(ch.id)"
+                    @change="toggleChallengeTargeting(ch.id)"
+                    class="cursor-pointer accent-blue-600 w-4 h-4"
+                  />
+                  <span class="text-sm">{{ ch.num }}. {{ ch.name }}</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Repentance Challenges -->
+            <div>
+              <h4 class="text-sm text-gray-500 mb-2">Repentance</h4>
+              <div class="space-y-2">
+                <label
+                  v-for="ch in GAME_CHALLENGES.repentance"
+                  :key="ch.id"
+                  class="flex items-center gap-3 cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    :checked="isChallengeTargeting(ch.id)"
+                    @change="toggleChallengeTargeting(ch.id)"
+                    class="cursor-pointer accent-blue-600 w-4 h-4"
+                  />
+                  <span class="text-sm">{{ ch.num }}. {{ ch.name }}</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </template>
       </div>
     </div>
   </div>
