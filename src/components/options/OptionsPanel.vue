@@ -2,6 +2,7 @@
 import ChromaStyleSelector from './ChromaStyleSelector.vue'
 import ColorPickers from './ColorPickers.vue'
 import PresetButtons from './PresetButtons.vue'
+import TimedObjectiveSelector from './TimedObjectiveSelector.vue'
 import ChallengeSelector from './ChallengeSelector.vue'
 import GameChallengeSelector from './GameChallengeSelector.vue'
 </script>
@@ -17,6 +18,9 @@ import GameChallengeSelector from './GameChallengeSelector.vue'
 
       <hr class="border-gray-600 my-4" />
       <PresetButtons />
+
+      <hr class="border-gray-600 my-4" />
+      <TimedObjectiveSelector />
 
       <hr class="border-gray-600 my-4" />
       <ChallengeSelector />
