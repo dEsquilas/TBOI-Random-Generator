@@ -17,9 +17,13 @@ const { markCurrentAsComplete } = useRandomizer()
 
 const bgColor = computed(() => `#${store.chromaBgColor}`)
 const chromaStyle = computed(() => store.chromaStyle)
-const hasResults = computed(() => store.results.players.length > 0)
+const hasResults = computed(() => store.results.players.length > 0 || store.results.gameChallenge)
+const isGameChallenge = computed(() => !!store.results.gameChallenge)
 const canMarkComplete = computed(() => {
-  return hasResults.value &&
+  // Can mark game challenge as complete
+  if (isGameChallenge.value) return true
+  // Can mark normal result as complete (single player, not custom)
+  return store.results.players.length > 0 &&
     store.numberPlayers === 1 &&
     !store.results.players[0]?.isCustom
 })
@@ -65,7 +69,7 @@ function handleError(message) {
           :class="canMarkComplete ? 'cursor-pointer hover:bg-black/80' : 'opacity-40 cursor-not-allowed'"
         >
           <img src="/img/check.svg" alt="" class="w-5 h-5" />
-          Mark current objectives as complete
+          {{ isGameChallenge ? 'Mark challenge as complete' : 'Mark current objectives as complete' }}
         </button>
       </div>
     </main>
