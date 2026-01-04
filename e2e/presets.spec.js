@@ -40,21 +40,4 @@ test.describe('Presets', () => {
     expect(mainText.length).toBeGreaterThan(0)
   })
 
-  // Probabilistic - might not get tainted in N tries
-  test.skip('should apply Repentance preset with all characters including tainted', async ({ page }) => {
-    await page.click('button:has-text("Repentance")')
-    await page.waitForTimeout(200)
-
-    let foundTainted = false
-    for (let i = 0; i < 30; i++) {
-      await clickRandomize(page)
-      const mainText = await page.locator('main').textContent()
-      if (mainText.includes('Tainted')) {
-        foundTainted = true
-        break
-      }
-    }
-
-    expect(foundTainted).toBe(true)
-  })
 })

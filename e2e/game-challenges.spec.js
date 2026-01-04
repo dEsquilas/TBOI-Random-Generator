@@ -8,27 +8,38 @@ test.describe('Game Challenges', () => {
     await page.reload()
   })
 
-  // This test is probabilistic - game challenges appear ~13% of the time
-  // Skip for CI, run manually to verify functionality
-  test.skip('should show game challenge when enabled', async ({ page }) => {
-    const gameChallengesToggle = page.locator('text=Include game challenges').first()
+  test('should show game challenge when enabled with minimal targets', async ({ page }) => {
+    test.setTimeout(60000)
 
+    // Enable game challenges via UI click
+    const gameChallengesToggle = page.locator('text=Include game challenges').first()
     if (await gameChallengesToggle.isVisible()) {
       await gameChallengesToggle.click()
       await page.waitForTimeout(200)
     }
 
+    // Now do many rolls - game challenges have ~1/8 chance (1 out of 8 total options: 7 objectives + challenges)
+    // Actually with all targets enabled, we have many more character+objective combos
+    // Game challenges appear as 1 option out of (objectives + 1), so ~12.5% chance
     let foundChallenge = false
     const challengeNames = [
       'Pitch Black', 'High Brow', 'Head Trauma', 'Darkness Falls',
-      'The Tank', 'Solar System', 'Suicide King', 'Demo Man'
+      'The Tank', 'Solar System', 'Suicide King', 'Demo Man',
+      'Cat Got Your Tongue', 'Cursed!', 'Glass Cannon', 'Beans!',
+      'Slow Roll', 'Computer Savvy', 'Waka Waka', 'The Host',
+      'The Family Man', 'Purist', 'XXXXXXXXL', 'SPEED!',
+      'BRAINS!', 'PRIDE DAY!', 'The Guardian', 'Backasswards',
+      'Aprils Fool', 'Pokey Mans', 'Ultra Hard', 'Pong',
+      'Scat Man', 'Bloody Mary', 'Baptism by Fire', 'DELETE THIS'
     ]
 
-    for (let i = 0; i < 50; i++) {
+    // With ~12.5% chance per roll, P(none in 30 rolls) = 0.875^30 ≈ 1.7%
+    for (let i = 0; i < 30; i++) {
       await clickRandomize(page)
       const mainText = await page.locator('main').textContent()
 
-      if (challengeNames.some(name => mainText.includes(name))) {
+      // Game challenges display "CHALLENGE" text and the challenge name in uppercase
+      if (mainText.includes('CHALLENGE') || challengeNames.some(name => mainText.toUpperCase().includes(name.toUpperCase()))) {
         foundChallenge = true
         break
       }
