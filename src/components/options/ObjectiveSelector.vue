@@ -85,5 +85,13 @@ function setWeight(id, e) {
         </div>
       </div>
     </div>
+
+    <!-- Completion Check -->
+    <div class="border-t border-gray-600 pt-3 mt-3">
+      <label class="flex items-center gap-2 cursor-pointer">
+        <input type="checkbox" v-model="store.completionCheck" class="cursor-pointer" />
+        <span class="text-sm">Avoid completed objectives</span>
+      </label>
+    </div>
   </div>
 </template>
