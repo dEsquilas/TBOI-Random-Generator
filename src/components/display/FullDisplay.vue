@@ -14,6 +14,7 @@ const spinningPlayers = computed(() => store.spinningPlayers)
 const spinningObjectives = computed(() => store.spinningObjectives)
 const players = computed(() => store.results.players)
 const objectives = computed(() => store.results.objectives)
+const timedObjectives = computed(() => store.results.timedObjectives || [])
 const challenges = computed(() => store.results.challenges)
 const gameChallenge = computed(() => store.results.gameChallenge)
 const numPlayers = computed(() => store.numberPlayers)
@@ -91,14 +92,27 @@ const pageImage = computed(() => isTainted.value ? '/img/page_alt_blood.png' : '
       </div>
 
       <!-- Objectives -->
-      <div v-if="displayObjectives" class="absolute bottom-[25%] left-1/2 -translate-x-1/2 flex gap-2">
-        <img
-          v-for="(obj, idx) in displayObjectives"
-          :key="`${obj.id}-${idx}`"
-          :src="`/img/${obj.image}`"
-          :alt="obj.name"
-          class="max-w-[100px] h-auto"
-        />
+      <div v-if="displayObjectives" class="absolute bottom-[25%] left-1/2 -translate-x-1/2 flex flex-col items-center gap-1">
+        <!-- Main objective -->
+        <div class="flex gap-2 justify-center">
+          <img
+            v-for="(obj, idx) in displayObjectives"
+            :key="`${obj.id}-${idx}`"
+            :src="`/img/${obj.image}`"
+            :alt="obj.name"
+            class="max-w-[100px] h-auto"
+          />
+        </div>
+        <!-- Timed objectives (Boss Rush, Hush) below main objective -->
+        <div v-if="timedObjectives.length > 0 && !isSpinning" class="flex gap-2 justify-center">
+          <img
+            v-for="timed in timedObjectives"
+            :key="timed.id"
+            :src="`/img/${timed.image}`"
+            :alt="timed.name"
+            class="max-w-[60px] h-auto"
+          />
+        </div>
       </div>
 
       <!-- Challenges -->
