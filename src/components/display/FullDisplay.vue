@@ -1,9 +1,12 @@
 <script setup>
 import { computed } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
+import { CHARACTERS } from '@/constants/gameData'
 import PlayerResult from './PlayerResult.vue'
 
 const store = useGameStore()
+
+const taintedIds = new Set(CHARACTERS.tainted.map(c => c.id))
 
 const hasResults = computed(() => store.results.players.length > 0)
 const isSpinning = computed(() => store.isSpinning)
@@ -35,11 +38,20 @@ const displayObjectives = computed(() => {
   }
   return null
 })
+
+// Check if current display has a tainted character
+const isTainted = computed(() => {
+  const currentPlayers = displayPlayers.value
+  if (!currentPlayers) return false
+  return currentPlayers.some(p => taintedIds.has(p.id))
+})
+
+const pageImage = computed(() => isTainted.value ? '/img/page_alt_blood.png' : '/img/page_blood.png')
 </script>
 
 <template>
   <div class="relative w-full max-w-[600px]">
-    <img src="/img/page_blood.png" class="w-full h-auto" />
+    <img :src="pageImage" class="w-full h-auto" />
 
     <!-- Players -->
     <div class="absolute top-[27%] left-1/2 -translate-x-1/2 flex justify-center gap-4">
