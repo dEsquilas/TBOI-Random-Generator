@@ -18,6 +18,8 @@ const timedObjectives = computed(() => store.results.timedObjectives || [])
 const challenges = computed(() => store.results.challenges)
 const gameChallenge = computed(() => store.results.gameChallenge)
 const numPlayers = computed(() => store.numberPlayers)
+const characterScale = computed(() => store.characterScale / 100)
+const objectiveScale = computed(() => store.objectiveScale / 100)
 
 // Show spinning players during animation, otherwise show results or placeholder
 const displayPlayers = computed(() => {
@@ -71,47 +73,60 @@ const pageImage = computed(() => isTainted.value ? '/img/page_alt_blood.png' : '
     <!-- Normal Display -->
     <template v-else>
       <!-- Players -->
-      <div class="absolute top-[27%] left-1/2 -translate-x-1/2 flex justify-center gap-4">
-        <template v-if="displayPlayers">
-          <PlayerResult
-            v-for="(player, idx) in displayPlayers"
-            :key="`${player.id}-${idx}`"
-            :player="player"
-            :size="numPlayers > 2 ? 'small' : 'normal'"
-            :show-name="numPlayers < 4"
-          />
-        </template>
-        <template v-else>
-          <img
-            v-for="i in numPlayers"
-            :key="i"
-            src="/img/questionmark.png"
-            :class="numPlayers > 2 ? 'w-12' : 'w-16'"
-          />
-        </template>
+      <div class="absolute top-[27%] left-1/2 -translate-x-1/2">
+        <div
+          class="flex justify-center gap-4"
+          :style="displayPlayers ? { transform: `scale(${characterScale})` } : {}"
+        >
+          <template v-if="displayPlayers">
+            <PlayerResult
+              v-for="(player, idx) in displayPlayers"
+              :key="`${player.id}-${idx}`"
+              :player="player"
+              :size="numPlayers > 2 ? 'small' : 'normal'"
+              :show-name="numPlayers < 4"
+            />
+          </template>
+          <template v-else>
+            <img
+              v-for="i in numPlayers"
+              :key="i"
+              src="/img/questionmark.png"
+              :class="numPlayers > 2 ? 'w-12' : 'w-16'"
+            />
+          </template>
+        </div>
       </div>
 
       <!-- Objectives -->
-      <div v-if="displayObjectives" class="absolute bottom-[25%] left-1/2 -translate-x-1/2 flex flex-col items-center gap-1">
-        <!-- Main objective -->
-        <div class="flex gap-2 justify-center">
-          <img
-            v-for="(obj, idx) in displayObjectives"
-            :key="`${obj.id}-${idx}`"
-            :src="`/img/${obj.image}`"
-            :alt="obj.name"
-            class="max-w-[100px] h-auto"
-          />
-        </div>
-        <!-- Timed objectives (Boss Rush, Hush) below main objective -->
-        <div v-if="timedObjectives.length > 0 && !isSpinning" class="flex gap-2 justify-center">
-          <img
-            v-for="timed in timedObjectives"
-            :key="timed.id"
-            :src="`/img/${timed.image}`"
-            :alt="timed.name"
-            class="max-w-[60px] h-auto"
-          />
+      <div
+        v-if="displayObjectives"
+        class="absolute bottom-[18%] left-1/2 -translate-x-1/2"
+      >
+        <div
+          class="flex flex-col items-center gap-1"
+          :style="{ transform: `scale(${objectiveScale})` }"
+        >
+          <!-- Main objective -->
+          <div class="flex gap-2 justify-center">
+            <img
+              v-for="(obj, idx) in displayObjectives"
+              :key="`${obj.id}-${idx}`"
+              :src="`/img/${obj.image}`"
+              :alt="obj.name"
+              class="max-w-[100px] h-auto"
+            />
+          </div>
+          <!-- Timed objectives (Boss Rush, Hush) below main objective -->
+          <div v-if="timedObjectives.length > 0 && !isSpinning" class="flex gap-2 justify-center">
+            <img
+              v-for="timed in timedObjectives"
+              :key="timed.id"
+              :src="`/img/${timed.image}`"
+              :alt="timed.name"
+              class="max-w-[60px] h-auto"
+            />
+          </div>
         </div>
       </div>
 

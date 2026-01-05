@@ -9,6 +9,10 @@ export const useGameStore = defineStore('game', () => {
   const chromaTextColor = ref('FFFFFF')
   const chromaBgColor = ref('00FF00')
 
+  // Scale settings (50-150%)
+  const characterScale = ref(100)
+  const objectiveScale = ref(100)
+
   // Game settings
   const numberPlayers = ref(1)
   const duplicateCheck = ref(false)
@@ -286,6 +290,8 @@ export const useGameStore = defineStore('game', () => {
       chromaAlignment: chromaAlignment.value,
       chromaTextColor: chromaTextColor.value,
       chromaBgColor: chromaBgColor.value,
+      characterScale: characterScale.value,
+      objectiveScale: objectiveScale.value,
       numberPlayers: numberPlayers.value,
       duplicateCheck: duplicateCheck.value,
       completionCheck: completionCheck.value,
@@ -319,6 +325,8 @@ export const useGameStore = defineStore('game', () => {
     if (state.chromaAlignment) chromaAlignment.value = state.chromaAlignment
     if (state.chromaTextColor) chromaTextColor.value = state.chromaTextColor
     if (state.chromaBgColor) chromaBgColor.value = state.chromaBgColor
+    if (state.characterScale) characterScale.value = state.characterScale
+    if (state.objectiveScale) objectiveScale.value = state.objectiveScale
     if (state.numberPlayers) numberPlayers.value = state.numberPlayers
     if (state.duplicateCheck !== undefined) duplicateCheck.value = state.duplicateCheck
     if (state.completionCheck !== undefined) completionCheck.value = state.completionCheck
@@ -351,6 +359,9 @@ export const useGameStore = defineStore('game', () => {
     chromaAlignment,
     chromaTextColor,
     chromaBgColor,
+    // Scale
+    characterScale,
+    objectiveScale,
     // Game settings
     numberPlayers,
     duplicateCheck,

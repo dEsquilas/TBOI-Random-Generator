@@ -65,6 +65,17 @@ function toggleAllForCharacter(charId) {
   }
 }
 
+function hasAllTargetsForObjective(objId) {
+  return allCharacters.every(char => store.isTargeting(char.id, objId))
+}
+
+function toggleAllForObjective(objId) {
+  const enableAll = !hasAllTargetsForObjective(objId)
+  allCharacters.forEach(char => {
+    store.setTargeting(char.id, objId, enableAll)
+  })
+}
+
 // Total stats
 const totalMarks = allCharacters.length * allObjectives.length
 
@@ -161,7 +172,7 @@ function toggleAllChallengeTargets() {
           <div
             v-for="obj in allObjectives"
             :key="obj.id"
-            class="w-6 h-6 flex items-center justify-center"
+            class="w-5 h-5 mr-[3px] flex items-center justify-center"
           >
             <img
               :src="`/img/${obj.icon}`"
@@ -351,20 +362,22 @@ function toggleAllChallengeTargets() {
 
         <!-- Objective Icons Header -->
         <div class="flex items-center gap-1 mb-2">
-          <span class="w-[94px] shrink-0"></span>
-          <div
+          <span class="w-[100px] shrink-0"></span>
+          <button
             v-for="obj in allObjectives"
             :key="obj.id"
-            class="w-6 h-6 flex items-center justify-center"
+            @click="toggleAllForObjective(obj.id)"
+            class="w-5 h-6 border border-transparent flex items-center justify-center cursor-pointer hover:bg-gray-700 rounded transition-colors"
+            :class="hasAllTargetsForObjective(obj.id) ? 'bg-blue-600/30' : ''"
+            :title="`Toggle ${obj.name} for all characters`"
           >
             <img
               :src="`/img/${obj.icon}`"
               :alt="obj.name"
-              :title="obj.name"
               class="w-4 h-4 object-contain"
             />
-          </div>
-          <span class="w-12 shrink-0"></span>
+          </button>
+          <span class="shrink-0"></span>
         </div>
 
         <!-- Normal Characters -->

@@ -21,6 +21,9 @@ const alignClass = computed(() => ({
 const customNames = computed(() => {
   return players.value.filter(p => p.isCustom).map(p => p.name).join(', ')
 })
+
+const characterScale = computed(() => store.characterScale / 100)
+const objectiveScale = computed(() => store.objectiveScale / 100)
 </script>
 
 <template>
@@ -36,7 +39,7 @@ const customNames = computed(() => {
     <!-- Normal Display -->
     <template v-else>
       <!-- Character section -->
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-3" :style="{ transform: `scale(${characterScale})`, transformOrigin: 'left center' }">
         <template v-if="numPlayers === 1">
           <template v-if="hasResults">
             <img
@@ -70,7 +73,7 @@ const customNames = computed(() => {
       </div>
 
       <!-- Goal section -->
-      <div v-if="hasResults" class="flex items-center gap-3">
+      <div v-if="hasResults" class="flex items-center gap-3" :style="{ transform: `scale(${objectiveScale})`, transformOrigin: 'left center' }">
         <img :src="`/img/${objectives[0].image}`" class="max-w-[100px] h-auto" />
         <template v-if="objectives.length > 1">
           <img src="/img/plus.png" class="w-6 h-6" />
