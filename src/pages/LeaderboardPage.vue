@@ -7,7 +7,7 @@ const loading = ref(true)
 
 onMounted(async () => {
   try {
-    const response = await fetch('/data/leaderboard.json')
+    const response = await fetch(`/data/leaderboard.json?t=${Date.now()}`)
     leaderboard.value = await response.json()
   } catch (error) {
     console.error('Failed to load leaderboard:', error)
@@ -16,7 +16,7 @@ onMounted(async () => {
   }
 })
 
-const top10 = computed(() => leaderboard.value.slice(0, 10))
+const top7 = computed(() => leaderboard.value.slice(0, 7))
 </script>
 
 <template>
@@ -54,7 +54,7 @@ const top10 = computed(() => leaderboard.value.slice(0, 10))
         <!-- List -->
         <div v-else class="space-y-1 md:space-y-2 flex-1 overflow-y-auto">
           <div
-            v-for="entry in top10"
+            v-for="entry in top7"
             :key="entry.rank"
             class="flex items-center gap-1 md:gap-3 py-1 md:py-2 font-isaac text-sm md:text-2xl text-[#2a2a2a] group"
           >
